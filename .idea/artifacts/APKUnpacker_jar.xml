@@ -1,0 +1,10 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="APKUnpacker:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/APKUnpacker_jar</output-path>
+    <root id="archive" name="APKUnpacker.jar">
+      <element id="module-output" name="APKUnpacker" />
+      <element id="extracted-dir" path="$KOTLIN_BUNDLED$/lib/kotlin-runtime.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$KOTLIN_BUNDLED$/lib/kotlin-reflect.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
