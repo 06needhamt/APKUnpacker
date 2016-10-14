@@ -43,15 +43,17 @@ object UnpackAPK {
     }
     @JvmStatic val ConvertAPKToZip = { path : String ->
         println("Converting APK To ZIP")
-        val dest = file?.copyTo(File(path.substring(0..path.length - 4) + "zip"),true) // Copy APK To .ZIP
+        val dest = file?.copyTo(File(path.substring(0..path.length - 4) + "zip"),true) // Convert APK To .ZIP
         if(!dest?.exists()!!){
             println("Could Not Convert APK To ZIP")
         }
+        println("APK File Successfully Converted To ZIP")
     }
     @JvmStatic val UnzipAPK = { path: String ->
         val zip = File(path.substring(0..path.length - 4) + "zip")
         println("Unzipping APK")
         val zipProcBuilder = ProcessBuilder(mutableListOf("cmd", "/C", "7z", "e", "-y", "${zip.path}", "-o${zip.nameWithoutExtension}"))
+        zipProcBuilder.inheritIO()
         val zipProc = zipProcBuilder.start()
         while(zipProc.isAlive) {}
         println("APK Successfully Unzipped")
@@ -60,6 +62,7 @@ object UnpackAPK {
     @JvmStatic val UnpackResources = { path : String ->
         println("Unpacking Resources...")
         val apkToolProcBuilder = ProcessBuilder(mutableListOf("cmd", "/C", "java", "-jar", "lib/apktool.jar", "d", "${path}", "-o", "${file?.nameWithoutExtension + "-res"}"))
+        apkToolProcBuilder.inheritIO()
         val apkToolProc = apkToolProcBuilder.start()
         while(apkToolProc.isAlive) {}
         println("Resources Successfully Unpacked")
@@ -73,6 +76,7 @@ object UnpackAPK {
                 if(f.extension.equals("dex")){
                     val jar = f.path.substring(0..f.path.length - 4 ) + "jar"
                     val dexProcBuilder = ProcessBuilder(mutableListOf("cmd", "/C" ,"lib\\d2j-dex2jar.bat", "${f.path}", "-o", "${jar}"))
+                    dexProcBuilder.inheritIO()
                     val dexProc = dexProcBuilder.start()
                     while(dexProc.isAlive) {}
                     println("DEX File: ${f.nameWithoutExtension} Converted Successfully")
@@ -92,10 +96,11 @@ object UnpackAPK {
         if(dir.isDirectory){
             for(f: File in dir.listFiles()){
                 if(f.extension.equals("jar")){
-                    val dexProcBuilder = ProcessBuilder(mutableListOf("cmd", "/C" ,"java", "-jar", "lib/fernflower.jar",
+                    val decProcBuilder = ProcessBuilder(mutableListOf("cmd", "/C" ,"java", "-jar", "lib/fernflower.jar",
                             "${f.path}", "${dir.path + "/src" }"))
-                    val dexProc = dexProcBuilder.start()
-                    while(dexProc.isAlive) {}
+                    decProcBuilder.inheritIO()
+                    val decProc = decProcBuilder.start()
+                    while(decProc.isAlive) {}
                     println("JAR File: ${f.nameWithoutExtension} Decompiled Successfully")
                 }
             }
